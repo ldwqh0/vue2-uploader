@@ -1,1 +1,4 @@
-console.log('a')
+import VueUploader from './VueUploader'
+export {
+  VueUploader
+}

@@ -11,10 +11,10 @@
     "build": "node build/build.js",
     "fix": "eslint --fix --ext .js,.vue src"
   },
-  "dependencies": {
-    "axios": "^0.18.0",    
+  "peerDependencies": {
+    "axios": "^0.18.0",
     "qs": "^6.5.1",
-    "vue": "^2.5.15"   
+    "vue": "^2.5.15"
   },
   "devDependencies": {
     "autoprefixer": "^8.1.0",
