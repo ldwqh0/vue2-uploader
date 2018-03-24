@@ -1,13 +1,13 @@
 {
-  "name": "vue-uploader",
+  "name": "vue2-uploader",
   "version": "0.0.1",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "dist/index.js",
   "bugs": {
-    "url": "https://github.com/ldwqh0/vue-uploader/issues"
+    "url": "https://github.com/ldwqh0/vue2-uploader/issues"
   },
-  "homepage": "https://github.com/ldwqh0/vue-uploader",
+  "homepage": "https://github.com/ldwqh0/vue2-uploader",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
@@ -81,5 +81,6 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "dependencies": {}
 }
