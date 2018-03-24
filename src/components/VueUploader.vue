@@ -8,7 +8,7 @@
            name="file">
     <table>
       <tr v-for="file in files" :key="file.$$index">
-        <td> {{ file.$$id }}</td>
+        <td>{{ file.$$id }}</td>
         <td>{{ file.file.name }}</td>
         <td>{{ file.state }}</td>
         <td>{{ file.progress }}</td>
@@ -21,7 +21,6 @@
 <script>
   import FileItem from '../lib/FileItem'
   import Uploader from '../lib/Uploader'
-
   export default {
     name: 'VueUploader',
     props: {
@@ -36,15 +35,18 @@
       url: { // 上传地址
         type: String,
         required: true
+      },
+      maxThreads: { // 最大同时上传进程数
+        type: Number,
+        default: 3
       }
     },
     data () {
       return {
         files: [],
-        queue: [],
         uploader: new Uploader({
           url: this.url,
-          // processor: 5,
+          maxThreads: this.maxThreads,
           events: {
             onItemProgress: (fileItem, p) => {
               this.$emit('on-item-progress', fileItem, p)
@@ -65,7 +67,12 @@
               this.$emit('on-complete')
             },
             onItemCancel: (fileItem) => {
-              // TODO 要从文件列表中删除
+              for (let i in this.files) {
+                if (this.files[i] === fileItem) {
+                  this.files.splice(i, 1)
+                  break
+                }
+              }
               this.$emit('on-item-cancel', fileItem)
             }
           }
@@ -79,17 +86,13 @@
         for (let file of e.target.files) {
           let fileItem = new FileItem({
             file,
-            autoUpload: this.autoUpload,
             uploader: this.uploader
           })
           this.files.push(fileItem)
           this.$emit('on-add', fileItem)
           if (this.autoUpload) {
-            this.uploader.addItem(fileItem) // 如果配置了自动上传，将文件推送到文件上传队列
+            this.uploader.uploadItem(fileItem)
           }
-        }
-        if (this.autoUpload) {
-          this.uploader.upload()
         }
         this.$refs.fileInput.value = ''
       }

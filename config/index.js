@@ -9,7 +9,12 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static', // 静态资源的路径
     assetsPublicPath: '/',// 项目发布路径
-    proxyTable: {},// devServer反向代理列表
+    proxyTable: {
+      '/w/file': {
+        target: 'http://127.0.0.1:8080/w/file',
+        pathRewrite: {'^/w/file': ''}
+      }
+    },// devServer反向代理列表
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

@@ -26,7 +26,7 @@
   export default class App extends Vue {
     name = 'App'
 
-    mounted () {
+     mounted () {
       console.log('ddd')
     }
 
