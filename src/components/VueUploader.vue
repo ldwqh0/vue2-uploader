@@ -1,30 +1,23 @@
 <template>
   <span class="vue-uploader">
-    <slot>上传文件</slot>
+    <slot>
+      <span class="vue-uploader-icon">上传文件</span>
+    </slot>
     <input :multiple="multiple"
            type="file"
            ref="fileInput"
            @change="change"
-           name="file">
-    <table>
-      <tr v-for="file in files" :key="file.$$index">
-        <td>{{ file.$$id }}</td>
-        <td>{{ file.file.name }}</td>
-        <td>{{ file.state }}</td>
-        <td>{{ file.progress }}</td>
-        <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
-        <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
-      </tr>
-    </table>
+           :name="name">
   </span>
 </template>
 <script>
   import FileItem from '../lib/FileItem'
   import Uploader from '../lib/Uploader'
+
   export default {
     name: 'VueUploader',
     props: {
-      autoUpload: {// 是否自动上传
+      autoUpload: { // 是否自动上传
         type: Boolean,
         default: false
       },
@@ -36,9 +29,17 @@
         type: String,
         required: true
       },
-      maxThreads: { // 最大同时上传进程数
+      maxThreads: { // 最大同时上传进程数，默认最多可以三个文件一起上传
         type: Number,
         default: 3
+      },
+      name: { // 上传到服务器的属性名称,默认是file
+        type: String,
+        default: 'file'
+      },
+      filter: { // 文件过滤器，一个正则表达式或者一个函数，当选择添加文件时，会对每个文件进行校验。返回true表示校验通过。
+        type: [RegExp, Function],
+        default: file => true
       }
     },
     data () {
@@ -57,16 +58,16 @@
             onItemError: (fileItem, e) => {
               this.$emit('on-item-error', fileItem, e)
             },
-            onItemComplete: (fileItem) => {
+            onItemComplete: fileItem => {
               this.$emit('on-item-complete', fileItem)
             },
-            onItemBeforeUpload: (fileItem) => {
+            onItemBeforeUpload: fileItem => {
               this.$emit('on-item-before-upload', fileItem)
             },
             onComplete: () => {
               this.$emit('on-complete')
             },
-            onItemCancel: (fileItem) => {
+            onItemCancel: fileItem => {
               for (let i in this.files) {
                 if (this.files[i] === fileItem) {
                   this.files.splice(i, 1)
@@ -79,22 +80,34 @@
         })
       }
     },
-    created () {
-    },
+    created () {},
     methods: {
       change (e) {
+        console.log('change', e)
         for (let file of e.target.files) {
-          let fileItem = new FileItem({
-            file,
-            uploader: this.uploader
-          })
-          this.files.push(fileItem)
-          this.$emit('on-add', fileItem)
-          if (this.autoUpload) {
-            this.uploader.uploadItem(fileItem)
+          if (this.doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
+            let fileItem = new FileItem({
+              file,
+              uploader: this.uploader
+            })
+            this.files.push(fileItem)
+            this.$emit('on-add', fileItem)
+            if (this.autoUpload) {
+              this.uploader.uploadItem(fileItem)
+            }
           }
         }
         this.$refs.fileInput.value = ''
+        this.$emit('change', this.files)
+      },
+      doFilter (file) {
+        if (this.filter instanceof RegExp) {
+          return this.filter.test(file.name)
+        } else if (this.filter instanceof Function) {
+          return this.filter(file)
+        } else {
+          return false
+        }
       }
     }
   }

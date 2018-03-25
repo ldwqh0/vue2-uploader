@@ -72,7 +72,7 @@ export default class Uploader {
             }
           }
         }).then(response => {
-          this._$$events.onItemSuccess(item)
+          this._$$events.onItemSuccess(item, response)
           item.state = 'completed'
           item.progress = 100
         }).catch(e => {
