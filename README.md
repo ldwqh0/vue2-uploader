@@ -1,7 +1,7 @@
 # vue2-uploader
 一个简单的，基于axios和FormData的Vue上传组件。  
 * 由于项目依赖于FormData,因此不支持IE9及以下的IE浏览器(可以尝试其它的shim方案，但不保存能正常使用),其它浏览器的兼容性可以参考相关的浏览器说明
-* 需要手动引入axios库
+* 需要手动引入[axios](https://github.com/axios/axios)库
 * 由于axios依赖于Promise，因此如果要在IE10/IE11+上使用时，需要导入相应的polyfill  
 
 项目中包含一个可运行的示例。
