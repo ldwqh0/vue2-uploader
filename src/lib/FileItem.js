@@ -17,6 +17,10 @@ export default class FileItem {
    */
   state = 'add'
 
+  get $$index () {
+    return this._$$id
+  }
+
   constructor ({file, uploader}) {
     this._$$id = FileItem.fileIndex++ // 文件的唯一标识符，用于各种操作
     this.file = file

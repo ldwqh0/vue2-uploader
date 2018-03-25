@@ -71,10 +71,11 @@
               for (let i in this.files) {
                 if (this.files[i] === fileItem) {
                   this.files.splice(i, 1)
+                  this.$emit('on-item-cancel', fileItem)
+                  this.$emit('change', this.files)
                   break
                 }
               }
-              this.$emit('on-item-cancel', fileItem)
             }
           }
         })
