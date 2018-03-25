@@ -1,5 +1,9 @@
 <template>
   <div id="app">
+    <h1>vue2-uploader</h1>
+    <p>
+      一个简单的，基于<a href="https://github.com/axios/axios">axios</a>的文件上传组件。<br>
+    </p>
     <vue-uploader :multiple="true"
                   url="/w/file"
                   @change="onChange"
@@ -10,9 +14,7 @@
                   @on-item-cancel="onItemCancel"
                   @on-complete="complete"
                   :filter="filter"
-                  :auto-upload="false">
-      <span>上传</span>
-    </vue-uploader>
+                  :auto-upload="false"/>
     <table>
       <tr v-for="file in files" :key="file.$$index">
         <td>{{ file.file.name }}</td>
@@ -77,5 +79,21 @@
   }
 </script>
 <style lang="less">
-
+.vue-uploader{
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  border: solid 1px black;
+  input[type='file'] {
+    display:  inline-block;
+    width:  100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    opacity: 0;
+    font-size: 0;
+    cursor: pointer;
+  }
+}
 </style>

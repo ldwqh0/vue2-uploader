@@ -1,5 +1,9 @@
 # vue2-uploader
-一个简单的，基于axios和FormData的Vue上传组件
+一个简单的，基于axios和FormData的Vue上传组件。  
+* 由于项目依赖于FormData,因此不支持IE9及以下的IE浏览器(可以尝试其它的shim方案，但不保存能正常使用),其它浏览器的兼容性可以参考相关的浏览器说明
+* 需要手动引入axios库
+* 由于axios依赖于Promise，因此如果要在IE10/IE11+上使用时，需要导入相应的polyfill  
+
 项目中包含一个可运行的示例。
 下载项目，通过下列方式运行示例项目
 ```
@@ -8,13 +12,17 @@ npm install && npm run dev
 ## 基本用法
 ### 导入组件
 ```
-npm install -S vue2-uploader
+npm install -S vue2-uploader axios
+```
+如果是IE10/IE11+浏览器，需要引入额外的polyfill
+```
+npm install -S es6-promise-polyfill
 ```
 ### 示例代码
 ```html
 <template>
   <vue-uploader :multiple="true"
-                url="/w/file"
+                url="/file"
                 @change="change"
                 :auto-upload="false">
     <span>可自定义的上传按钮</span>
@@ -30,6 +38,7 @@ npm install -S vue2-uploader
   </table>
 </template>
 <script>
+  import 'es6-promise-polyfill' // 如果使用IE10/IE11+浏览器，需要引入polyfill
   import VueUploader from 'vue2-uploader'
   export default {
     components:{
@@ -49,7 +58,6 @@ npm install -S vue2-uploader
 </script>
 ```
 组件提供一个default slot,可以自定义按钮的内容，但组件不提供样式，如果你需要自定义的样式，可以参考demo里面的代码
-
 ## 组件属性
 |属性名称|说名|类型|默认值|
 | :- | :- | :- | :- |
@@ -59,7 +67,6 @@ npm install -S vue2-uploader
 |maxThreads|最大同时上传进程数|Number|3|
 |name|上传到服务器的参数名称|String|"file"|
 |filter|文件过滤器，可以时一个正则表达式或者一个函数，当函数返回值为true时，表示通过过滤，函数可以参数为file: File|RegExp, Function|()=>true|
-
 ## 组件事件说明
 |事件名称|说明|回调参数|参数说明|
 | :- | :- | :- | :- |
@@ -72,10 +79,13 @@ npm install -S vue2-uploader
 |on-item-cancel|单项文件取消事件|(fileItem: FileItem)|取消的文件项|
 |on-item-error|单项文件上传错误事件|(fileItem: FileItem,error:Error)|错误的文件项，错误信息|
 |on-item-complete|文件上传完成（无论成功还是失败事件，文件上传完成（无论成功还是失败）|(fileItem: FileItem)|完成的文件项|
-
 ## FileItem属性
 |属性名称|类型|属性说明|
 | :- | :- | :-|
 |state|String|文件上传状态，有add(新增) ,ready(就绪), processing(上传中), completed(上传完成)/failed(上传失败)。FileItem会进行以上状态次序转换，不会发生逆转换|
 |progress|Number|文件上传进度,0-100之间的数值|
 |file|File|文件信息|
+## 计划中的功能
+* 批量上传功能
+* 整体进度显示
+* 修改示例中的上传服务，现有demo中的上传并没有处理/file请求

@@ -1,6 +1,6 @@
 {
   "name": "vue2-uploader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "dist/index.js",
@@ -17,7 +17,6 @@
   },
   "peerDependencies": {
     "axios": "^0.18.0",
-    "qs": "^6.5.1",
     "vue": "^2.5.15"
   },
   "files": [
