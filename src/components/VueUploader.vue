@@ -84,7 +84,6 @@
     created () {},
     methods: {
       change (e) {
-        console.log('change', e)
         for (let file of e.target.files) {
           if (this.doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
             let fileItem = new FileItem({
