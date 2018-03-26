@@ -7,6 +7,7 @@ const config = require('../config')
 const webpack = require('webpack')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
+const testServer =require('./test-server')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   output: {
@@ -29,6 +30,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     port: config.dev.port,
     proxy: config.dev.proxyTable,
     quiet: true, // necessary for FriendlyErrorsPlugin
+    before: testServer
   },
   plugins: [
     new webpack.DefinePlugin({

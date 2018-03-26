@@ -5,7 +5,7 @@
       一个简单的，基于<a href="https://github.com/axios/axios">axios</a>的文件上传组件。<br>
     </p>
     <vue-uploader :multiple="true"
-                  url="/w/file"
+                  url="/file"
                   @change="onChange"
                   @on-add="onAdd"
                   @on-item-progress="itemProgressChanged"
@@ -15,6 +15,7 @@
                   @on-complete="complete"
                   :filter="filter"
                   :auto-upload="false"/>
+    <div>待上传的文件的列表</div>
     <table>
       <tr v-for="file in files" :key="file.$$index">
         <td>{{ file.file.name }}</td>
@@ -22,6 +23,12 @@
         <td>{{ file.progress }}</td>
         <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
         <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
+      </tr>
+    </table>
+    <div>上传成功的文件的列表</div>
+    <table>
+      <tr v-for="file in rspFiles" :key="file.id">
+        <td>{{ file }}</td>
       </tr>
     </table>
   </div>
@@ -39,11 +46,8 @@
   })
   export default class App extends Vue {
     name = 'App'
-    files=[]
-
-    mounted () {
-      console.log('ddd')
-    }
+    files = []
+    rspFiles = []
 
     onAdd (fileItem) {
       console.log('添加文件', fileItem)
@@ -53,7 +57,9 @@
       console.debug('文件进度改变', fileItem, p)
     }
 
-    itemSuccess (fileItem) {
+    itemSuccess (fileItem, rsp) {
+      console.dir(rsp)
+      this.rspFiles.push(rsp.data)
       console.debug('文件上传完成', fileItem)
     }
 
