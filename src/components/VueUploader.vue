@@ -52,11 +52,11 @@
             onItemProgress: (fileItem, p) => {
               this.$emit('on-item-progress', fileItem, p)
             },
-            onItemSuccess: fileItem => {
-              this.$emit('on-item-success', fileItem)
+            onItemSuccess: (fileItem, response) => {
+              this.$emit('on-item-success', fileItem, response)
             },
-            onItemError: (fileItem, e) => {
-              this.$emit('on-item-error', fileItem, e)
+            onItemError: (fileItem, error) => {
+              this.$emit('on-item-error', fileItem, error)
             },
             onItemComplete: fileItem => {
               this.$emit('on-item-complete', fileItem)
@@ -73,7 +73,7 @@
                   this.files.splice(i, 1)
                   this.$emit('on-item-cancel', fileItem)
                   this.$emit('change', this.files)
-                  break
+                  return
                 }
               }
             }
