@@ -78,7 +78,7 @@ npm install -S es6-promise-polyfill
 |on-item-success|文件上传成功事件|(fileItem: FileItem,response: Response)|上传成功的文件项，服务器响应|
 |on-item-cancel|文件取消上传事件|(fileItem: FileItem)|取消的文件项|
 |on-item-error|文件上传错误事件|(fileItem: FileItem,error:Error)|错误的文件项，错误信息|
-|on-item-complete|文件上传完成（无论成功还是失败事件，文件上传完成（无论成功还是失败）|(fileItem: FileItem)|完成的文件项|
+|on-item-complete|文件上传完成（无论成功还是失败都会引发该事件）|(fileItem: FileItem)|完成的文件项|
 ## FileItem
 ### FileItem属性
 |属性名称|类型|属性说明|
