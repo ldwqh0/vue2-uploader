@@ -81,7 +81,6 @@
         })
       }
     },
-    created () {},
     methods: {
       change (e) {
         console.log('change', e)
