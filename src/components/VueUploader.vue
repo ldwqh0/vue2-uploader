@@ -39,7 +39,7 @@
       },
       filter: { // 文件过滤器，一个正则表达式或者一个函数，当选择添加文件时，会对每个文件进行校验。返回true表示校验通过。
         type: [RegExp, Function],
-        default: file => true
+        default: () => () => true
       }
     },
     data () {
