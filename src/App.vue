@@ -42,11 +42,10 @@
     files=[]
 
     mounted () {
-      console.log('ddd')
     }
 
     onAdd (fileItem) {
-      console.log('添加文件', fileItem)
+      console.debug('添加文件', fileItem)
     }
 
     itemProgressChanged (fileItem, p) {
