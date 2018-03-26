@@ -27,7 +27,21 @@ export default class Uploader {
    */
   cancelItem (fileItem) {
     if (fileItem.state === 'completed') {
-    } else {
+      // 如果文件已经上传完成了，什么都不做
+    } else if (fileItem.state === 'add' || fileItem.state === 'failed') {
+      // 如果文件还没有进入事件上传流程，或者文件已经上传失败，通知组件，让组件处理
+      this._$$events.onItemCancel(fileItem)
+    } else if (fileItem.state === 'ready') {
+      // 如果文件已经进入上传队列，但还没有开始上传,将文件从上传队列中删除
+      for (let i in this._$$queue) {
+        let _fileItem = this._$$queue[i]
+        if (_fileItem === fileItem) {
+          this._$$queue.splice(i, 1)
+          this._$$events.onItemCancel(fileItem)
+          return
+        }
+      }
+    } else if (fileItem.state === 'processing') {
       fileItem._cancelTokenSource.cancel('用户取消了上传')
       this._$$events.onItemCancel(fileItem)
     }

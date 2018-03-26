@@ -7,7 +7,7 @@
            :accept="accept"
            type="file"
            ref="fileInput"
-           @change="change"
+           @change="_$$change"
            :name="name">
   </span>
 </template>
@@ -88,9 +88,9 @@
     },
     created () {},
     methods: {
-      change (e) {
+      _$$change (e) {
         for (let file of e.target.files) {
-          if (this.doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
+          if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
             let fileItem = new FileItem({
               file,
               uploader: this.uploader
@@ -105,7 +105,7 @@
         this.$refs.fileInput.value = ''
         this.$emit('change', this.files)
       },
-      doFilter (file) {
+      _$$doFilter (file) {
         if (this.filter instanceof RegExp) {
           return this.filter.test(file.name)
         } else if (this.filter instanceof Function) {
