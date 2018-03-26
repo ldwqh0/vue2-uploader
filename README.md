@@ -69,7 +69,7 @@ npm install -S es6-promise-polyfill
 |maxThreads|最大同时上传进程数|Number|3|
 |name|上传到服务器的参数名称|String|"file"|
 |filter|文件过滤器，可以是一个正则表达式或者一个函数，当函数返回值为true时，表示通过过滤，函数可以使用的参数为file: File|RegExp, Function|()=>true|
-## 组件事件说明
+## 组件事件
 |事件名称|说明|回调参数|参数说明|
 | :- | :- | :- | :- |
 |on-add|添加文件事件|(fileItem: FileItem)|被添加的文件|
@@ -89,7 +89,7 @@ npm install -S es6-promise-polyfill
 |progress|Number|文件上传进度,0-100之间的数值|
 |file|File|文件信息|
 |$$index|Number|一个只读属性，主要用于files[]中的序号标记，可用于循环中的v-for :key标记|
-### fileItem中可用的方法
+### fileItem的可用方法
 |方法名称|说明|
 |:-|:-|
 |fileItem.upload()|将文件项加入上传队列，加入队列的文件可能不会立即上传|
