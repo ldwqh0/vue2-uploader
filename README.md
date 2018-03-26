@@ -21,21 +21,23 @@ npm install -S es6-promise-polyfill
 ### 示例代码
 ```html
 <template>
-  <vue-uploader :multiple="true"
-                url="/file"
-                @change="change"
-                :auto-upload="false">
-    <span>可自定义的上传按钮</span>
-  </vue-uploader>
-  <table>
-    <tr v-for="fileItem in files" :key="file.$$index">
-      <td>{{ fileItem.file.name }}</td>
-      <td>{{ fileItem.state }}</td>
-      <td>{{ fileItem.progress }}%</td>
-      <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
-      <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
-    </tr>
-  </table>
+  <div>
+    <vue-uploader :multiple="true"
+                  url="/file"
+                  @change="change"
+                  :auto-upload="false">
+      <span>可自定义的上传按钮</span>
+    </vue-uploader>
+    <table>
+      <tr v-for="fileItem in files" :key="file.$$index">
+        <td>{{ fileItem.file.name }}</td>
+        <td>{{ fileItem.state }}</td>
+        <td>{{ fileItem.progress }}%</td>
+        <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
+        <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
+      </tr>
+    </table>
+  </div>
 </template>
 <script>
   import 'es6-promise-polyfill' // 如果使用IE10/IE11+浏览器，需要引入polyfill
