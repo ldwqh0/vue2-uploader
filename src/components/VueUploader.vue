@@ -4,6 +4,7 @@
       <span class="vue-uploader-icon">上传文件</span>
     </slot>
     <input :multiple="multiple"
+           :accept="accept"
            type="file"
            ref="fileInput"
            @change="change"
@@ -17,6 +18,10 @@
   export default {
     name: 'VueUploader',
     props: {
+      accept: {
+        type: String,
+        default: '*'
+      },
       autoUpload: { // 是否自动上传
         type: Boolean,
         default: false
