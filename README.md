@@ -68,6 +68,7 @@ npm install -S es6-promise-polyfill
 |url|上传地址|String|无(必传项)|
 |maxThreads|最大同时上传进程数|Number|3|
 |name|上传到服务器的参数名称|String|"file"|
+|accept|文件选择框允许的文件类型，该属性会用于html的input[type='file']上|String|*|
 |filter|文件过滤器，可以是一个正则表达式或者一个函数，当函数返回值为true时，表示通过过滤，函数可以使用的参数为file: File|RegExp, Function|()=>true|
 ## 组件事件
 |事件名称|说明|回调参数|参数说明|
@@ -94,6 +95,11 @@ npm install -S es6-promise-polyfill
 |:-|:-|
 |fileItem.upload()|将文件项加入上传队列，加入队列的文件可能不会立即上传|
 |fileItem.cancel()|取消上传，取消在队列中的项（包括未开始上传和上传中的文件），并将文件从files中移除。已经上传的文件不可取消。取消上传中的文件会导致上传项抛出异常，并引发on-item-error事件|
+## 更新历史
+* 0.0.8:  
+  增accept属性，可以设置文件名筛选
+  0.0.7:
+  
 ## 计划中的功能
 * 批量上传功能
 * 整体进度显示
