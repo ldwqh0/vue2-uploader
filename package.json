@@ -20,8 +20,7 @@
     "vue": "^2.5.15"
   },
   "files": [
-    "src/components",
-    "src/lib",
+    "src",  
     "dist"
   ],
   "devDependencies": {
