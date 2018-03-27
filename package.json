@@ -1,6 +1,6 @@
 {
   "name": "vue2-uploader",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "dist/index.js",
