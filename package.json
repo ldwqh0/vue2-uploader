@@ -4,6 +4,7 @@
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "dist/index.js",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ldwqh0/vue2-uploader/issues"
   },
