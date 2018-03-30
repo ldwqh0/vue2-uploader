@@ -1,9 +1,9 @@
 {
   "name": "vue2-uploader",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
-  "main": "dist/index.js",
+  "main": "src/components/index.js",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ldwqh0/vue2-uploader/issues"
