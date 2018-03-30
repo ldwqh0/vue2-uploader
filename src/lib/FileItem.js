@@ -1,10 +1,11 @@
-export default class FileItem {
-  static fileIndex = 0 // 文件ID生成器
+import uuid from 'uuid/v1'
 
+export default class FileItem {
   /**
-   * 文件的进度
-   * @type {number}
+   * 文件上传器，一个fileItem要和一个uploader
    */
+  _$$uploader
+
   progress = 0
 
   /**
@@ -12,17 +13,15 @@ export default class FileItem {
    */
   file
 
-  /* 文件的状态，有add ,ready, processing, completed, failed新增，就绪，传输中，完成,失败五种状态
-   *
+  /**
+   * 获取文件的ID
    */
-  state = 'add'
-
-  get $$index () {
+  get id () {
     return this._$$id
   }
 
   constructor ({file, uploader}) {
-    this._$$id = FileItem.fileIndex++ // 文件的唯一标识符，用于各种操作
+    this._$$id = uuid() // 文件的唯一标识符，用于各种操作
     this.file = file
     this._$$uploader = uploader
   }
@@ -31,7 +30,7 @@ export default class FileItem {
    *开始上传本文件
    */
   uploadItem () {
-    this._$$uploader.uploadItem(this)
+     this._$$uploader.uploadItem(this)
   }
 
   /**
