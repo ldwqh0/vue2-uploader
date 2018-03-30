@@ -17,7 +17,8 @@
                   :auto-upload="false"/>
     <div>待上传的文件的列表</div>
     <table>
-      <tr v-for="file in files" :key="file.$$index">
+      <tr v-for="file in files" :key="file.id">
+        <td>{{ file.id }}</td>
         <td>{{ file.file.name }}</td>
         <td>{{ file.state }}</td>
         <td>{{ file.progress }}</td>
