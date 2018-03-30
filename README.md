@@ -29,9 +29,9 @@ npm install -S es6-promise-polyfill
       <span>可自定义的上传按钮</span>
     </vue-uploader>
     <table>
-      <tr v-for="fileItem in files" :key="file.$$index">
-        <td>{{ fileItem.file.name }}</td>
-        <td>{{ fileItem.state }}</td>
+      <tr v-for="fileItem in files" :key="file.id">
+        <td>{{ fileItem.id }}</td>
+        <td>{{ fileItem.file.name }}</td>       
         <td>{{ fileItem.progress }}%</td>
         <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
         <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
@@ -69,14 +69,13 @@ npm install -S es6-promise-polyfill
 |maxThreads|最大同时上传进程数|Number|3|
 |name|上传到服务器的参数名称|String|"file"|
 |accept|文件选择框允许的文件类型，该属性会用于html的input[type='file']上|String|*|
-|filter|文件过滤器，可以是一个正则表达式或者一个函数，当函数返回值为true时，表示通过过滤，函数可以使用的参数为file: File|RegExp, Function|()=>true|
+|filter|文件过滤器，可以是一个正则表达式或者一个函数，当函数返回值为true时，表示通过过滤，函数可以使用的参数为file: File|RegExp, Function|()=>()=>true|
 ## 组件事件
 |事件名称|说明|回调参数|参数说明|
 | :- | :- | :- | :- |
-|on-add|添加文件事件|(fileItem: FileItem)|被添加的文件|
+|on-add|添加文件事件|(fileItem: FileItem)|被添加的文件项|
 |change|文件改变事件|(files[]: Files[])|所有的文件项|
 |on-complete|所有文件上传完成|无|无|
-|on-item-before-upload|文件在上传之前发生|(fileItem: FileItem)|待上传的文件项|
 |on-item-progress|文件上传进度改变事件|(fileItem: FileItem,p)|fileItem: 产生进度改变的文件，p: 进度信息|
 |on-item-success|文件上传成功事件|(fileItem: FileItem,response: Response)|上传成功的文件项，服务器响应|
 |on-item-cancel|文件取消上传事件|(fileItem: FileItem)|取消的文件项|
@@ -86,10 +85,9 @@ npm install -S es6-promise-polyfill
 ### FileItem属性
 |属性名称|类型|属性说明|
 | :- | :- | :-|
-|state|String|文件上传状态，有add(新增) ,ready(就绪), processing(上传中), completed(上传完成)/failed(上传失败)。FileItem会进行以上状态次序转换，不会发生逆转换|
 |progress|Number|文件上传进度,0-100之间的数值|
 |file|File|文件信息|
-|$$index|Number|一个只读属性，主要用于files[]中的序号标记，可用于循环中的v-for :key标记|
+|id|String|一个只读属性，文件上传前的唯一识别符，在后来的版本中可能修改为文件hash值,可用于循环中的v-for :key标记|
 ### fileItem的可用方法
 |方法名称|说明|
 |:-|:-|
@@ -97,7 +95,11 @@ npm install -S es6-promise-polyfill
 |fileItem.cancel()|取消上传，取消在队列中的项（包括未开始上传和上传中的文件），并将文件从files中移除。已经上传的文件不可取消。取消上传中的文件会导致上传项抛出异常，并引发on-item-error事件|
 ## 更新历史
 * 0.0.9:  
+  重新设计的任务模型
   增加docs文档目录
+  移除onItemBeforeUpload事件,
+  移除fileItem.$$index属性,增加fileItem.id属性,标识文件的唯一性
+  移除fileItem的state属性
   
 * 0.0.8:  
   增accept属性，可以设置文件类型筛选.  
