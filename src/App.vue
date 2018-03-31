@@ -13,7 +13,9 @@
                   @on-item-before-upload="beforeUpload"
                   @on-item-cancel="onItemCancel"
                   @on-complete="complete"
+                  @on-item-error="onItemError"
                   :filter="filter"
+                  :chunk-size="1024*1024"
                   :auto-upload="false"/>
     <div>待上传的文件的列表</div>
     <table>
@@ -77,6 +79,10 @@
 
     beforeUpload (fileItem) {
       console.debug('准备上传文件', fileItem)
+    }
+
+    onItemError (fileItem, e) {
+      console.debug('文件上传错误', fileItem, e)
     }
 
     filter (file) {
