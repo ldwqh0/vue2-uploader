@@ -1,6 +1,6 @@
 {
   "name": "vue2-uploader",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "src/components/index.js",
@@ -13,8 +13,8 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "prepublish": "rimraf dist && webpack --config build/webpack.prod.conf.js",
-    "fix": "eslint --fix --ext .js,.vue src"
+    "prepublish": "rimraf dist && babel src/lib -d dist/lib && cp -r src/components dist/components",
+    "fix": "eslint --fix --ext .js,.vue src"    
   },
   "peerDependencies": {
     "axios": "^0.18.0",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "autoprefixer": "^8.1.0",
     "axios": "^0.18.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
@@ -40,6 +41,7 @@
     "body-parser": "^1.18.2",
     "chalk": "^2.0.1",
     "copy-webpack-plugin": "^4.5.1",
+    "cp": "^0.2.0",
     "css-loader": "^0.28.0",
     "eslint": "^4.15.0",
     "eslint-config-standard": "^11.0.0",
@@ -66,7 +68,7 @@
     "rimraf": "^2.6.0",
     "semver": "^5.3.0",
     "shelljs": "^0.8.1",
-    "url-loader": "^1.0.1",   
+    "url-loader": "^1.0.1",
     "vue": "^2.5.16",
     "vue-loader": "^14.2.1",
     "vue-property-decorator": "^6.0.0",
