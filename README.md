@@ -160,6 +160,8 @@ public class UploaderApplication {
 }
   ```
 ## 更新历史
+* 0.1.3
+  修改发布脚本
 * 0.1.2
   修改发布脚本
 * 0.1.1

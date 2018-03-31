@@ -3,7 +3,7 @@
   "version": "0.1.2",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
-  "main": "src/components/index.js",
+  "main": "dist/components/index.js",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ldwqh0/vue2-uploader/issues"
