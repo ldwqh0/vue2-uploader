@@ -3,4 +3,7 @@
 .vscode
 dist/
 node_modules/
-
+.settings
+.classpath
+.project
+target/
