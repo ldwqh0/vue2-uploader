@@ -160,6 +160,8 @@ public class UploaderApplication {
 }
   ```
 ## 更新历史
+* 0.1.1
+  修正说明文档中的java代码的错误
 * 0.1.0
   新增分块上传功能
 * 0.0.9:  
