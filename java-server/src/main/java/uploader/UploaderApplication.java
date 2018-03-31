@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -31,6 +32,22 @@ public class UploaderApplication {
 
 	@PostMapping
 	@ResponseBody
+	public String upload(MultipartHttpServletRequest request) {
+		try {
+			Collection<MultipartFile> files = request.getFileMap().values();
+			MultipartFile mFile = files.iterator().next();
+			String orgFilename = mFile.getOriginalFilename();
+			String target = folder + orgFilename;
+			mFile.transferTo(new File(target));
+			return target;
+		} catch (Exception e) {
+
+		}
+		return null;
+	}
+
+	@PostMapping(headers = { "chunk-index", "file-id" })
+	@ResponseBody
 	public String upload(
 			@RequestHeader("chunk-index") Long chunkIndex, // 当前块序号
 			@RequestHeader("file-id") String tempId, // 文件ID
@@ -46,7 +63,7 @@ public class UploaderApplication {
 			if (chunkIndex == chunkCount - 1) { // 校验索引确定上传是否完成
 				String target = folder + filename; // 生成保存的目标文件
 				try (OutputStream output = new FileOutputStream(target);) {
-					
+
 					// 组装分块文件
 					for (int i = 0; i < chunkCount; i++) {
 						String sInput = folder + tempId + "." + i;
