@@ -45,6 +45,10 @@
       filter: { // 文件过滤器，一个正则表达式或者一个函数，当选择添加文件时，会对每个文件进行校验。返回true表示校验通过。
         type: [RegExp, Function],
         default: () => () => true
+      },
+      chunkSize: { // 文件分块大小,为0代表不分块
+        type: Number,
+        default: () => 0
       }
     },
     data () {
@@ -53,6 +57,7 @@
         uploader: new Uploader({
           url: this.url,
           maxThreads: this.maxThreads,
+          chunkSize: this.chunkSize,
           events: {
             onItemProgress: (fileItem, p) => {
               this.$emit('on-item-progress', fileItem, p)

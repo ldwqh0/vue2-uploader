@@ -4,7 +4,7 @@ import Task from './Task'
  */
 export default class Uploader {
   _$$threads = 0 // 上传线程计数器
-  _$$thunkSize // 文件分块的大小
+  _$$chunkSize // 文件分块的大小
   _$$events = {
     // onItemBeforeUpload (item) {}, // 单项准备上传事件
     onItemProgress (item, p) {}, // 单项进度改变事件
@@ -12,14 +12,14 @@ export default class Uploader {
     onItemError (item, e) {}, // 单项错误事件
     onItemComplete (item) {}, // 单项上传完成事件
     onItemCancel (item) {}, // 取消事件
-    onComplete () {}// 所有文件上传事件上传
+    onComplete () {} // 所有文件上传事件上传
   }
-  constructor ({url, maxThreads = 3, events, thunkSize = 0}) {
+  constructor ({url, maxThreads = 3, events, chunkSize = 0}) {
     this.url = url // 上传的地址
     this._$$maxThreads = maxThreads// 最大同时上传数
     this._$$queue = [] // 整个上传队列
     this._$$events = Object.assign({}, this._$$events, events) // 进度回掉事件
-    this._$$thunkSize = thunkSize
+    this._$$chunkSize = chunkSize
   }
 
   /**
@@ -50,7 +50,7 @@ export default class Uploader {
    * @param fileItem
    */
   uploadItem (fileItem) {
-    let task = new Task({fileItem, url: this.url, thunkSize: this._$$thunkSize})
+    let task = new Task({fileItem, url: this.url, chunkSize: this._$$chunkSize})
     fileItem.task = task
     task._$$state = 'runnable'// 任务进入队列之前，转入runable态
     this._$$queue.push(task)
@@ -73,7 +73,7 @@ export default class Uploader {
           task.onComplete = item => this._$onComplete(item)
           task.onSuccess = (item, response) => this._$$events.onItemSuccess(item, response)
           task.onProgress = (item, p) => this._$$events.onItemProgress(item, p)
-          task.onError = item => this._$$events.onItemError(item)
+          task.onError = (item, error) => this._$$events.onItemError(item, error)
           task._$$state = 'running'
           this._$$threads++
           task.run()// 启动任务
