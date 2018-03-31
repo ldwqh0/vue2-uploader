@@ -95,10 +95,10 @@
       _$$change (e) {
         for (let file of e.target.files) {
           if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
-            let fileItem = new FileItem({
-              file,
-              uploader: this.uploader
-            })
+            let fileItem = new FileItem({file, url: this.url, chunkSize: this.chunkSize})
+            fileItem.uploadItem = () => {
+              this.uploader.uploadItem(fileItem)
+            }
             this.files.push(fileItem)
             this.$emit('on-add', fileItem)
             if (this.autoUpload) {
