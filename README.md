@@ -160,6 +160,8 @@ public class UploaderApplication {
 }
   ```
 ## 更新历史
+* 0.1.4
+  优化代码,提升运行效率
 * 0.1.3
   修改发布脚本
 * 0.1.2
