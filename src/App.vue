@@ -4,7 +4,8 @@
     <p>
       一个简单的，基于<a href="https://github.com/axios/axios">axios</a>的文件上传组件。<br>
     </p>
-    <vue-uploader :multiple="true"
+    <vue-uploader ref="uploader"
+                  :multiple="true"
                   url="/file"
                   @change="onChange"
                   @on-add="onAdd"
@@ -14,17 +15,18 @@
                   @on-item-cancel="onItemCancel"
                   @on-complete="complete"
                   @on-item-error="onItemError"
-                  :filter="filter"
                   :chunk-size="1024*1024"
+                  :filter="filter"
                   :auto-upload="false"/>
     <div>待上传的文件的列表</div>
+    <a href="javascript:;" @click="uploadAll">全部上传</a>
     <table>
       <tr v-for="file in files" :key="file.id">
         <td>{{ file.id }}</td>
         <td>{{ file.file.name }}</td>
         <td>{{ file.state }}</td>
         <td>{{ file.progress }}</td>
-        <td><a href="javascript:void(0);" @click="file.cancel()">删除</a></td>
+        <td><a href="javascript:void(0);" @click="file.cancel()">取消</a></td>
         <td><a href="javascript:void(0);" @click="file.uploadItem()">上传</a></td>
       </tr>
     </table>
@@ -52,6 +54,9 @@
     files = []
     rspFiles = []
 
+    uploadAll () {
+      this.$refs.uploader.uploadAll()
+    }
     onAdd (fileItem) {
       console.debug('添加文件', fileItem)
     }

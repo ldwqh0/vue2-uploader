@@ -57,45 +57,65 @@
         uploader: new Uploader({
           url: this.url,
           maxThreads: this.maxThreads,
-          chunkSize: this.chunkSize,
-          events: {
-            onItemProgress: (fileItem, p) => {
-              this.$emit('on-item-progress', fileItem, p)
-            },
-            onItemSuccess: (fileItem, response) => {
-              this.$emit('on-item-success', fileItem, response)
-            },
-            onItemError: (fileItem, error) => {
-              this.$emit('on-item-error', fileItem, error)
-            },
-            onItemComplete: fileItem => {
-              this.$emit('on-item-complete', fileItem)
-            },
-            onItemBeforeUpload: fileItem => {
-              this.$emit('on-item-before-upload', fileItem)
-            },
-            onComplete: () => {
-              this.$emit('on-complete')
-            },
-            onItemCancel: fileItem => {
-              for (let i in this.files) {
-                if (this.files[i] === fileItem) {
-                  this.files.splice(i, 1)
-                  this.$emit('on-item-cancel', fileItem)
-                  this.$emit('change', this.files)
-                  return
-                }
+          chunkSize: this.chunkSize
+        }),
+        events: {
+          onItemProgress: (fileItem, p) => {
+            this.$emit('on-item-progress', fileItem, p)
+          },
+          onItemSuccess: (fileItem, response) => {
+            this.$emit('on-item-success', fileItem, response)
+          },
+          onItemError: (fileItem, error) => {
+            this.$emit('on-item-error', fileItem, error)
+          },
+          onItemComplete: fileItem => {
+            this.$emit('on-item-complete', fileItem)
+          },
+          onItemBeforeUpload: fileItem => {
+            this.$emit('on-item-before-upload', fileItem)
+          },
+          onComplete: () => {
+            this.$emit('on-complete')
+          },
+          onItemCancel: fileItem => {
+            for (let i in this.files) {
+              if (this.files[i] === fileItem) {
+                this.files.splice(i, 1)
+                this.$emit('on-item-cancel', fileItem)
+                this.$emit('change', this.files)
+                return
               }
             }
           }
-        })
+        }
       }
     },
     methods: {
+      uploadAll () {
+        for (let fileItem of this.files) {
+          if (fileItem.state === 'new') {
+            this.uploader.uploadItem(fileItem)
+          }
+        }
+      },
+      cancelAll () {
+        for (let fileItem of this.files) {
+          fileItem.cancel()
+        }
+      },
+      clean () {
+        console.log('d')
+      },
       _$$change (e) {
         for (let file of e.target.files) {
           if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
             let fileItem = new FileItem({file, url: this.url, chunkSize: this.chunkSize})
+            fileItem.onProgress = (progress) => this.events.onItemProgress(fileItem, progress)
+            fileItem.onComplete = () => this.events.onComplete()
+            fileItem.onSuccess = (response) => this.events.onItemSuccess(fileItem, response)
+            fileItem.onError = (e) => this.events.onItemError(fileItem, e)
+            fileItem.onCancel = () => this.events.onItemCancel(fileItem)
             fileItem.uploadItem = () => {
               this.uploader.uploadItem(fileItem)
             }

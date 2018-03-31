@@ -4,20 +4,11 @@
 export default class Uploader {
   _$$threads = 0 // 上传线程计数器
   _$$chunkSize // 文件分块的大小
-  _$$events = {
-    // onItemBeforeUpload (item) {}, // 单项准备上传事件
-    onItemProgress (item, p) {}, // 单项进度改变事件
-    onItemSuccess (item) {}, // 单项成功事件
-    onItemError (item, e) {}, // 单项错误事件
-    onItemComplete (item) {}, // 单项上传完成事件
-    onItemCancel (item) {}, // 取消事件
-    onComplete () {} // 所有文件上传事件上传
-  }
-  constructor ({url, maxThreads = 3, events, chunkSize = 0}) {
+
+  constructor ({url, maxThreads = 3, chunkSize = 0}) {
     // this.url = url // 上传的地址
     this._$$maxThreads = maxThreads// 最大同时上传数
     this._$$queue = [] // 整个上传队列
-    this._$$events = Object.assign({}, this._$$events, events) // 进度回掉事件
     this._$$chunkSize = chunkSize
   }
 
@@ -43,15 +34,9 @@ export default class Uploader {
       let fileItem = this._$$queue.shift()
       if (fileItem === undefined) {
       } else {
-        if (fileItem.state === 'runnable') {
-          fileItem.onComplete = () => this._$onComplete(fileItem)
-          fileItem.onSuccess = response => this._$$events.onItemSuccess(fileItem, response)
-          fileItem.onProgress = p => this._$$events.onItemProgress(fileItem, p)
-          fileItem.onError = e => this._$$events.onItemError(fileItem, e)
-          fileItem._$$state = 'running'
-          this._$$threads++
-          fileItem.run()// 启动任务
-        }
+        fileItem._$$state = 'running'
+        this._$$threads++
+        fileItem.run()// 启动任务
       }
     }
   }

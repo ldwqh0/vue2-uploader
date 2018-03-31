@@ -19,6 +19,7 @@ export default class FileItem {
   onSuccess (response) {}
   onError (e) {}
   onStateChanged () {}
+  onCancel () {}
 
   /**
    * 待上传的文件
@@ -39,9 +40,9 @@ export default class FileItem {
     return this._$$progress
   }
 
-  set progerss (progress) {
+  set progress (progress) {
     this._$$progress = progress
-    this.onProgress(this.progress)
+    this.onProgress(progress)
   }
 
   /**
@@ -75,27 +76,30 @@ export default class FileItem {
     if (this._$$chunkSize > 0) {
       let response
       while (this._$$position < this.file.size) { // 依次循环上传
-        if (this.state === 'dead') return
-        try {
-          response = await this._$$uploadChunk()
-          this._$$position += this._$$chunkSize
-          this._$$error = 0 // 每次上传成功，充值错误计数
-          this._$$chunkIndex++
-        } catch (e) {
-          if (this._$$error++ >= 10) { // 上传错误超限上传失败,引发事件
-            this.onError(e)
-            break // 终止循环
+        if (this.state === 'dead') {
+          return
+        } else {
+          try {
+            response = await this._$$uploadChunk()
+            this._$$position += this._$$chunkSize
+            this._$$error = 0 // 每次上传成功，充值错误计数
+            this._$$chunkIndex++
+          } catch (e) {
+            if (this._$$error++ >= 10) { // 上传错误超限上传失败,引发事件
+              this.onError(e)
+              break // 终止循环
+            }
           }
         }
       }
       if (this._$$error <= 0) {
-        this.progerss = 100 // 完成之后设置进度
+        this.progress = 100 // 完成之后设置进度
         this.onSuccess(response)
       }
     } else {
       try {
         let response = await this._$$uploadFile()
-        this.progerss = 100
+        this.progress = 100
         this.onSuccess(response)
       } catch (e) {
         this.onError(e)
@@ -121,7 +125,7 @@ export default class FileItem {
         if (progress > 1) {
           progress--
         }
-        this.progerss = process
+        this.progress = progress
       }
     })
   }
@@ -148,7 +152,7 @@ export default class FileItem {
         if (progress > 100) {
           progress = 99
         }
-        this.progerss = progress
+        this.progress = progress
       }
     })
   }
@@ -164,5 +168,6 @@ export default class FileItem {
       this._$$cancelTokenSource.cancel('用户取消了上传')// 取消上传
     }
     this.state = 'dead' // 将任务标记为结束
+    this.onCancel()
   }
 }
