@@ -113,6 +113,7 @@ npm install -S es6-promise-polyfill
   下面是一个使用Spring Boot处理上传的简单示例
   ```java
 @SpringBootApplication
+@RequestMapping("/file")
 public class UploaderApplication {
 
 	// 文件的保存路径
@@ -122,7 +123,8 @@ public class UploaderApplication {
 		SpringApplication.run(UploaderApplication.class, args);
 	}
 
-	@PostMapping("/file")
+	@PostMapping
+	@ResponseBody
 	public String upload(
 			@RequestHeader("chunk-index") Long chunkIndex, // 当前块序号
 			@RequestHeader("file-id") String tempId, // 文件ID
@@ -135,9 +137,10 @@ public class UploaderApplication {
 			Collection<MultipartFile> files = request.getFileMap().values(); // 获取文件
 			MultipartFile mFile = files.iterator().next();
 			mFile.transferTo(new File(chunkname)); // 将数据保存到分块文件
-			if (chunkIndex == chunkCount - 1) { // 校验索引以确定上传是否完成
+			if (chunkIndex == chunkCount - 1) { // 校验索引确定上传是否完成
 				String target = folder + filename; // 生成保存的目标文件
-				try (OutputStream output = new FileOutputStream(target);) {					
+				try (OutputStream output = new FileOutputStream(target);) {
+					
 					// 组装分块文件
 					for (int i = 0; i < chunkCount; i++) {
 						String sInput = folder + tempId + "." + i;
@@ -149,6 +152,7 @@ public class UploaderApplication {
 				return target; // 返回保存的文件名
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			response.setStatus(500); // 如果某块出错，响应错误
 		}
 		return null;
