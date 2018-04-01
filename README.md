@@ -22,6 +22,8 @@ mvn spring-boot:run
 [分块上传](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 [Component API](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 ## 更新历史
+* 0.1.6
+  
 * 0.1.5  
   去掉事件的on-前缀
 * 0.1.4  
