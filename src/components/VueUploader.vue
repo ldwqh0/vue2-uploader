@@ -116,7 +116,7 @@
               this.uploader.uploadItem(fileItem)
             }
             this.files.push(fileItem)
-            this.$emit('on-add', fileItem)
+            this.$emit('add', fileItem)
             if (this.autoUpload) {
               this.uploader.uploadItem(fileItem)
             }
@@ -135,25 +135,25 @@
         }
       },
       _$$onItemProgress  (fileItem, p) {
-        this.$emit('on-item-progress', fileItem, p)
+        this.$emit('item-progress', fileItem, p)
       },
       _$$onItemSuccess  (fileItem, response) {
-        this.$emit('on-item-success', fileItem, response)
+        this.$emit('item-success', fileItem, response)
       },
       _$$onItemError  (fileItem, error) {
-        this.$emit('on-item-error', fileItem, error)
+        this.$emit('item-error', fileItem, error)
       },
       _$$onItemComplete  (fileItem) {
-        this.$emit('on-item-complete', fileItem)
+        this.$emit('item-complete', fileItem)
       },
       _$$onComplete  () {
-        this.$emit('on-complete')
+        this.$emit('complete')
       },
       _$$onItemCancel (fileItem) {
         for (let i in this.files) {
           if (this.files[i] === fileItem) {
             this.files.splice(i, 1)
-            this.$emit('on-item-cancel', fileItem)
+            this.$emit('item-cancel', fileItem)
             this.$emit('change', this.files)
             return
           }
