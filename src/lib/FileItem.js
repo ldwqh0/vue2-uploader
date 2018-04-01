@@ -7,7 +7,6 @@ const CancelToken = axios.CancelToken
 export default class FileItem {
   _$$state='new' // 当前状态,模拟线程的5态 new,runnable,running,blocked,dead
   _$$cancelTokenSource // 取消标记
-  _$$progress=0 // 任务进度
   // 分块信息
   _$$position = 0 // 当前的位置
   _$$chunkSize // 任务的分片大小
@@ -20,6 +19,7 @@ export default class FileItem {
   onError (e) {}
   onStateChanged () {}
   onCancel () {}
+  _$$loaded=0 // 表示文件已经上传的部分
 
   /**
    * 待上传的文件
@@ -33,16 +33,25 @@ export default class FileItem {
     return this._$$id
   }
 
+  set progress (progress) {
+    this._$$progress = progress
+    this.onProgress(progress)
+  }
+
   /**
    * 获取上传进度
    */
   get progress () {
-    return this._$$progress
+    let _p = this._$$loaded / this.file.size * 100
+    if (_p >= 100 && this._$$state === 'dead') {
+      return 100
+    } else if (_p > 1) {
+      return _p - 1
+    }
   }
 
-  set progress (progress) {
-    this._$$progress = progress
-    this.onProgress(progress)
+  get loaded () {
+    return this._$$loaded
   }
 
   /**
@@ -125,11 +134,8 @@ export default class FileItem {
       cancelToken,
       onUploadProgress: p => {
         // 进度改变时，刷新块进度
-        let progress = p.loaded / p.total * 100
-        if (progress > 1) {
-          progress--
-        }
-        this.progress = progress
+        this._$$loaded = p.loaded
+        this.onProgress(this.progress)
       }
     })
   }
@@ -138,10 +144,9 @@ export default class FileItem {
     this._$$cancelTokenSource = CancelToken.source()
     let cancelToken = this._$$cancelTokenSource.token
     let blob = this.file.slice(this._$$position, this._$$position + this._$$chunkSize)
-    let filename = this.file.name
     let data = new FormData()
     data.append('file', blob)
-    data.append('filename', filename)
+    data.append('filename', this.file.name)
     return $http.post(this._$$url, data, {
       headers: {
         'Chunk-Index': this._$$chunkIndex,
@@ -151,12 +156,8 @@ export default class FileItem {
       cancelToken,
       onUploadProgress: p => {
         // 进度改变时，刷新块进度
-        // this._$$chunkProgress = p.loaded
-        let progress = (this._$$position + p.loaded) / this.file.size * 100
-        if (progress > 100) {
-          progress = 99
-        }
-        this.progress = progress
+        this._$$loaded = this._$$position + p.loaded
+        this.onProgress(this.progress)
       }
     })
   }
