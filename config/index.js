@@ -10,6 +10,9 @@ module.exports = {
     assetsSubDirectory: 'static', // 静态资源的路径
     assetsPublicPath: '/',// 项目发布路径
     proxyTable: {      
+      "/file":{
+        "target":"http://127.0.0.1:8080"
+      }
     },// devServer反向代理列表
 
     // Various Dev Server settings

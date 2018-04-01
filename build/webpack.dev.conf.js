@@ -30,7 +30,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     port: config.dev.port,
     proxy: config.dev.proxyTable,
     quiet: true, // necessary for FriendlyErrorsPlugin
-    before: fileServer
+    // before: fileServer
   },
   plugins: [
     new webpack.DefinePlugin({

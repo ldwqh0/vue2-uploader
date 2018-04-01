@@ -9,13 +9,21 @@
 ```
 npm install && npm run dev
 ```
+访问[http://locahost](http://locahost)即可看到上传页面.
+
+示例代码中提供了一个Spring版本的简单服务端代码.代码基于Spring-boot,需要maven环境.可通过下下列方式启动测试服务器
+```bash
+cd java-server
+mvn spring-boot:run
+```
+
 ## More Info
 [使用方法](https://github.com/ldwqh0/vue2-uploader/wiki/%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95)  
 [分块上传](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 [Component API](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 ## 更新历史
 * 0.1.4  
-  优化代码,提升运行效率,简化事件模型
+  优化代码,提升运行效率,简化事件模型,实现了批量上传,实现了整体进度计算
 * 0.1.3  
   修改发布脚本
 * 0.1.2  
@@ -40,7 +48,5 @@ npm install && npm run dev
 * 0.0.1-0.0.6  
   初始版本,持续跟进中
 ## 计划中的功能
-* 批量上传功能
-* 整体进度显示
 * 断点续传
-* 修改示例中的上传服务,现有demo中的上传并没有处理/file请求
+
