@@ -66,6 +66,30 @@
         this._$$onComplete()
       }
     },
+    computed: {
+      progress () {
+        return Number.parseInt(this.loaded / this.total * 100)
+      },
+      loaded () {
+        let loaded = 0
+        for (let fileItem of this.files) {
+          loaded += fileItem.loaded
+        }
+        return loaded
+      },
+      total () {
+        let count = 0
+        for (let fileItem of this.files) {
+          count += fileItem.file.size
+        }
+        return count
+      }
+    },
+    watch: {
+      progress (val) {
+        this.$emit('progress', val)
+      }
+    },
     methods: {
       uploadAll () {
         for (let fileItem of this.files) {
@@ -78,10 +102,6 @@
         for (let fileItem of this.files) {
           fileItem.cancel()
         }
-      },
-      clean () {
-        // 清除待处理
-        console.log('d')
       },
       _$$change (e) {
         for (let file of e.target.files) {

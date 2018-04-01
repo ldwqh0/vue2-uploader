@@ -15,11 +15,12 @@
                   @on-item-cancel="onItemCancel"
                   @on-complete="complete"
                   @on-item-error="onItemError"
-                  :chunk-size="1024*1024"
+                  @progress="onProgress"
                   :filter="filter"
                   :auto-upload="false"/>
     <div>待上传的文件的列表</div>
     <a href="javascript:;" @click="uploadAll">全部上传</a>
+    <div>总进度{{ totalProgress }}</div>
     <table>
       <tr v-for="file in files" :key="file.id">
         <td>{{ file.id }}</td>
@@ -53,6 +54,7 @@
     name = 'App'
     files = []
     rspFiles = []
+    totalProgress=0
 
     uploadAll () {
       this.$refs.uploader.uploadAll()
@@ -63,6 +65,9 @@
 
     itemProgressChanged (fileItem, p) {
       console.debug('文件进度改变', fileItem, p)
+    }
+    onProgress (p) {
+      this.totalProgress = p
     }
 
     itemSuccess (fileItem, rsp) {
