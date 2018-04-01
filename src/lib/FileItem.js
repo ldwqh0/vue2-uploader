@@ -70,6 +70,10 @@ export default class FileItem {
     }
   }
 
+  uploadItem () {
+    // 启动上传事件，由于上传队列的存在，FileItem自身不能控制上传队列，因此需要在外部实现该方法
+  }
+
    // 执行任务
    async run () {
     if (this.state === 'dead') return

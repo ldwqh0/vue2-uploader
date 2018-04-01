@@ -58,37 +58,12 @@
           url: this.url,
           maxThreads: this.maxThreads,
           chunkSize: this.chunkSize
-        }),
-        events: {
-          onItemProgress: (fileItem, p) => {
-            this.$emit('on-item-progress', fileItem, p)
-          },
-          onItemSuccess: (fileItem, response) => {
-            this.$emit('on-item-success', fileItem, response)
-          },
-          onItemError: (fileItem, error) => {
-            this.$emit('on-item-error', fileItem, error)
-          },
-          onItemComplete: fileItem => {
-            this.$emit('on-item-complete', fileItem)
-          },
-          onItemBeforeUpload: fileItem => {
-            this.$emit('on-item-before-upload', fileItem)
-          },
-          onComplete: () => {
-            this.$emit('on-complete')
-          },
-          onItemCancel: fileItem => {
-            for (let i in this.files) {
-              if (this.files[i] === fileItem) {
-                this.files.splice(i, 1)
-                this.$emit('on-item-cancel', fileItem)
-                this.$emit('change', this.files)
-                return
-              }
-            }
-          }
-        }
+        })
+      }
+    },
+    created () {
+      this.uploader.onComplete = () => {
+        this._$$onComplete()
       }
     },
     methods: {
@@ -105,17 +80,18 @@
         }
       },
       clean () {
+        // 清除待处理
         console.log('d')
       },
       _$$change (e) {
         for (let file of e.target.files) {
           if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
             let fileItem = new FileItem({file, url: this.url, chunkSize: this.chunkSize})
-            fileItem.onProgress = (progress) => this.events.onItemProgress(fileItem, progress)
-            fileItem.onComplete = () => this.events.onComplete()
-            fileItem.onSuccess = (response) => this.events.onItemSuccess(fileItem, response)
-            fileItem.onError = (e) => this.events.onItemError(fileItem, e)
-            fileItem.onCancel = () => this.events.onItemCancel(fileItem)
+            fileItem.onProgress = (progress) => this._$$onItemProgress(fileItem, progress)
+            fileItem.onComplete = () => this._$$onItemComplete(fileItem)
+            fileItem.onSuccess = (response) => this._$$onItemSuccess(fileItem, response)
+            fileItem.onError = (e) => this._$$onItemError(fileItem, e)
+            fileItem.onCancel = () => this._$$onItemCancel(fileItem)
             fileItem.uploadItem = () => {
               this.uploader.uploadItem(fileItem)
             }
@@ -136,6 +112,31 @@
           return this.filter(file)
         } else {
           return false
+        }
+      },
+      _$$onItemProgress  (fileItem, p) {
+        this.$emit('on-item-progress', fileItem, p)
+      },
+      _$$onItemSuccess  (fileItem, response) {
+        this.$emit('on-item-success', fileItem, response)
+      },
+      _$$onItemError  (fileItem, error) {
+        this.$emit('on-item-error', fileItem, error)
+      },
+      _$$onItemComplete  (fileItem) {
+        this.$emit('on-item-complete', fileItem)
+      },
+      _$$onComplete  () {
+        this.$emit('on-complete')
+      },
+      _$$onItemCancel (fileItem) {
+        for (let i in this.files) {
+          if (this.files[i] === fileItem) {
+            this.files.splice(i, 1)
+            this.$emit('on-item-cancel', fileItem)
+            this.$emit('change', this.files)
+            return
+          }
         }
       }
     }
