@@ -1,6 +1,6 @@
 {
   "name": "vue2-uploader",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "dist/components/index.js",
@@ -13,8 +13,8 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "prepublish": "rimraf dist && babel src/lib -d dist/lib && cp -r src/components dist/components",
-    "fix": "eslint --fix --ext .js,.vue src"    
+    "prepublish": "rimraf dist && babel src/lib -d dist/lib && babel src/components -d dist/components && cp -r src/components/VueUploader.vue dist/components/VueUploader.vue",
+    "fix": "eslint --fix --ext .js,.vue src"
   },
   "peerDependencies": {
     "axios": "^0.18.0",

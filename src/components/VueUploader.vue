@@ -12,6 +12,7 @@
   </span>
 </template>
 <script>
+  import axios from 'axios'
   import FileItem from '../lib/FileItem'
   import Uploader from '../lib/Uploader'
 
@@ -49,6 +50,10 @@
       chunkSize: { // 文件分块大小,为0代表不分块
         type: Number,
         default: () => 0
+      },
+      $http: {
+        type: Object,
+        default: () => axios.create()
       }
     },
     data () {
@@ -106,7 +111,7 @@
       _$$change (e) {
         for (let file of e.target.files) {
           if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
-            let fileItem = new FileItem({file, url: this.url, chunkSize: this.chunkSize})
+            let fileItem = new FileItem({ file, url: this.url, chunkSize: this.chunkSize, $http: this.$http })
             fileItem.onProgress = (progress) => this._$$onItemProgress(fileItem, progress)
             fileItem.onComplete = () => this._$$onItemComplete(fileItem)
             fileItem.onSuccess = (response) => this._$$onItemSuccess(fileItem, response)
@@ -134,19 +139,19 @@
           return false
         }
       },
-      _$$onItemProgress  (fileItem, p) {
+      _$$onItemProgress (fileItem, p) {
         this.$emit('item-progress', fileItem, p)
       },
-      _$$onItemSuccess  (fileItem, response) {
+      _$$onItemSuccess (fileItem, response) {
         this.$emit('item-success', fileItem, response)
       },
-      _$$onItemError  (fileItem, error) {
+      _$$onItemError (fileItem, error) {
         this.$emit('item-error', fileItem, error)
       },
-      _$$onItemComplete  (fileItem) {
+      _$$onItemComplete (fileItem) {
         this.$emit('item-complete', fileItem)
       },
-      _$$onComplete  () {
+      _$$onComplete () {
         this.$emit('complete')
       },
       _$$onItemCancel (fileItem) {

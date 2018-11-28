@@ -1,25 +1,32 @@
 import uuid from 'uuid/v1'
 import axios from 'axios'
+import config from './config'
 
-const $http = axios.create() // 定义一个上传的axios对象
+// const $http = config.$http // 定义一个上传的axios对象
 const CancelToken = axios.CancelToken
 
 export default class FileItem {
-  _$$state='new' // 当前状态,模拟线程的5态 new,runnable,running,blocked,dead
+  _$$state = 'new' // 当前状态,模拟线程的5态 new,runnable,running,blocked,dead
   _$$cancelTokenSource // 取消标记
   // 分块信息
   _$$position = 0 // 当前的位置
   _$$chunkSize // 任务的分片大小
-  _$$chunkIndex=0 // 当前分片的索引号
-  _$$chunkCount=0 // 总的分片数
+  _$$chunkIndex = 0 // 当前分片的索引号
+  _$$chunkCount = 0 // 总的分片数
   _$$error = 0 // 分块错误次数
   onProgress (progress) { }
+
   onComplete () {}
+
   onSuccess (response) {}
+
   onError (e) {}
+
   onStateChanged () {}
+
   onCancel () {}
-  _$$loaded=0 // 表示文件已经上传的部分
+
+  _$$loaded = 0 // 表示文件已经上传的部分
 
   /**
    * 待上传的文件
@@ -69,7 +76,7 @@ export default class FileItem {
     this.onStateChanged(this)
   }
 
-  constructor ({file, url, chunkSize = 0}) {
+  constructor ({ file, url, chunkSize = 0, $http = config.$http }) {
     this._$$id = uuid()
     this.file = file
     this._$$url = url
@@ -77,14 +84,15 @@ export default class FileItem {
     if (chunkSize > 0) {
       this._$$chunkCount = Math.ceil(file.size / chunkSize)
     }
+    this.$http = $http
   }
 
   uploadItem () {
     // 启动上传事件，由于上传队列的存在，FileItem自身不能控制上传队列，因此需要在外部实现该方法
   }
 
-   // 执行任务
-   async run () {
+  // 执行任务
+  async run () {
     if (this.state === 'dead') return
     if (this._$$chunkSize > 0) {
       let response
@@ -130,7 +138,7 @@ export default class FileItem {
     let cancelToken = this._$$cancelTokenSource.token
     let data = new FormData()
     data.append('file', this.file)
-    return $http.post(this._$$url, data, {
+    return this.$http.post(this._$$url, data, {
       cancelToken,
       onUploadProgress: p => {
         // 进度改变时，刷新块进度
@@ -147,7 +155,7 @@ export default class FileItem {
     let data = new FormData()
     data.append('file', blob)
     data.append('filename', this.file.name)
-    return $http.post(this._$$url, data, {
+    return this.$http.post(this._$$url, data, {
       headers: {
         'Chunk-Index': this._$$chunkIndex,
         'File-Id': this.id,
@@ -165,7 +173,7 @@ export default class FileItem {
   /**
    * 取消上传文件
    */
- /**
+  /**
    * 取消这个上传任务
    */
   cancel () {
