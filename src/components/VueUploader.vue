@@ -52,7 +52,7 @@
         default: () => 0
       },
       $http: {
-        type: Object,
+        type: [Object, Function],
         default: () => axios.create()
       }
     },
