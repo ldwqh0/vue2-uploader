@@ -51,7 +51,7 @@
         type: Number,
         default: () => 0
       },
-      $http: {
+      http: {
         type: [Object, Function],
         default: () => axios.create()
       }
