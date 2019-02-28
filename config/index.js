@@ -11,8 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static', // 静态资源的路径
     assetsPublicPath: '/element-seed/', // 项目发布路径
     proxyTable: {
-      "/file":{
-        "target":"http://127.0.0.1:8080"
+      '/file': {
+        'target': 'http://127.0.0.1:8080'
       }
     },// devServer反向代理列表
     // Various Dev Server settings
@@ -57,7 +57,6 @@ module.exports = {
     /**
      * Source Maps
      */
-
     productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',

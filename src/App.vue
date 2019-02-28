@@ -11,12 +11,14 @@
                   @add="onAdd"
                   @item-progress="itemProgressChanged"
                   @item-success="itemSuccess"
+                  @item-complete="itemComplete"
                   @item-before-upload="beforeUpload"
                   @item-cancel="onItemCancel"
                   @complete="complete"
                   @item-error="onItemError"
                   @progress="onProgress"
                   :filter="filter"
+                  :chunk-size="200000"
                   :auto-upload="false"/>
     <div>待上传的文件的列表</div>
     <a href="javascript:;" @click="uploadAll">全部上传</a>
@@ -54,11 +56,12 @@
     name = 'App'
     files = []
     rspFiles = []
-    totalProgress=0
+    totalProgress = 0
 
     uploadAll () {
       this.$refs.uploader.uploadAll()
     }
+
     onAdd (fileItem) {
       console.debug('添加文件', fileItem)
     }
@@ -66,6 +69,7 @@
     itemProgressChanged (fileItem, p) {
       console.debug('文件进度改变', fileItem, p)
     }
+
     onProgress (p) {
       this.totalProgress = p
     }
@@ -73,6 +77,10 @@
     itemSuccess (fileItem, rsp) {
       this.rspFiles.push(rsp.data)
       console.debug('文件上传完成', fileItem)
+    }
+
+    itemComplete (fileItem) {
+      console.debug('文件处理完成', fileItem)
     }
 
     complete () {
@@ -101,21 +109,22 @@
   }
 </script>
 <style lang="less">
-.vue-uploader{
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  border: solid 1px black;
-  input[type='file'] {
-    display:  inline-block;
-    width:  100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    position: absolute;
-    opacity: 0;
-    font-size: 0;
-    cursor: pointer;
+  .vue-uploader {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    border: solid 1px black;
+
+    input[type='file'] {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      opacity: 0;
+      font-size: 0;
+      cursor: pointer;
+    }
   }
-}
 </style>

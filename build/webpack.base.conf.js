@@ -2,8 +2,6 @@
 const utils = require('./utils')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const config = require('../config')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const cssSourceMap = process.env.NODE_ENV === 'production' ? config.build.productionSourceMap : config.dev.cssSourceMap
 
 // 创建eslint规则
@@ -68,7 +66,7 @@ module.exports = {
       }, {
         test: /\.less$/,
         use: [{
-          loader: process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'vue-style-loader'
+          loader: 'vue-style-loader'
         }, {
           loader: 'css-loader',
           options: {
@@ -83,7 +81,7 @@ module.exports = {
       }, {
         test: /\.css$/,
         use: [{
-          loader: process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+          loader: 'vue-style-loader',
         }, {
           loader: 'css-loader',
           options: {
@@ -93,13 +91,6 @@ module.exports = {
       }]
   },
   plugins: [
-    new VueLoaderPlugin(),
-
-    // 复制静态资源到目录中，如果有更多需要复制的资源，请在这里添加
-    new CopyWebpackPlugin([{
-      from: utils.resolve('static'),
-      to: config.build.assetsSubDirectory,
-      ignore: ['.*']
-    }])
+    new VueLoaderPlugin()
   ]
 }

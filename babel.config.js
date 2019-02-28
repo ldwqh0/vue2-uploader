@@ -18,13 +18,6 @@ module.exports = function (api) {
       ]
     ],
     plugins: [
-      [
-        'component',
-        {
-          'libraryName': 'element-ui',
-          'styleLibraryName': 'theme-chalk'
-        }
-      ],
       // 在babel转码的时候，有些语法会转换为一些特殊函数，这个插件提供了这些公共函数，用以解决打包之后的体积
       '@babel/plugin-transform-runtime',
       // 这个插件编译@import('')语法
