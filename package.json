@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
-  "main": "dist/components/index.js",
+  "main": "src/components/index.js",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ldwqh0/vue2-uploader/issues"
@@ -13,16 +13,17 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "prepublish": "rimraf dist && babel src/lib -d dist/lib && babel src/components -d dist/components && cp -r src/components/VueUploader.vue dist/components/VueUploader.vue",
+    "prepublish": "babel src/components -d dist/components",
     "fix": "eslint --fix --ext .js,.vue src"
   },
   "peerDependencies": {
     "qs": "^6.5.0",
     "vue": "^2.5.0",
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "@babel/runtime": "^7.2.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.2.0"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.2.0",
@@ -79,7 +80,6 @@
     "shelljs": "^0.8.0",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "url-loader": "^1.0.0",
-    "vue": "^2.6.7",
     "vue": "^2.6.7",
     "vue-loader": "^15.4.0",
     "vue-property-decorator": "^7.3.0",
