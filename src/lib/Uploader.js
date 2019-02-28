@@ -5,7 +5,7 @@ export default class Uploader {
   _$$threads = 0 // 上传线程计数器
   _$$chunkSize // 文件分块的大小
   onComplete () {} // 所有队列中的任务上传完成后引发的事件
-  constructor ({url, maxThreads = 3, chunkSize = 0}) {
+  constructor ({ url, maxThreads = 3, chunkSize = 0 }) {
     // this.url = url // 上传的地址
     this._$$maxThreads = maxThreads// 最大同时上传数
     this._$$queue = [] // 整个上传队列

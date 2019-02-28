@@ -1,4 +1,3 @@
-// process.env.NODE_ENV = 'development' //定义为开发环境
 const merge = require('webpack-merge')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const baseWebpackConfig = require('./webpack.base.conf')
@@ -7,22 +6,25 @@ const config = require('../config')
 const webpack = require('webpack')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
 const portfinder = require('portfinder')
-const fileServer =require('./file-server')
+const mockServer = require('./mock-server')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
+  mode: 'development', // 模式
   output: {
-    publicPath: config.dev.assetsPublicPath,//发布路径
-    filename: '[name].js?'//输出文件命名规则
+    publicPath: config.dev.assetsPublicPath, // 发布路径
+    filename: '[name].js' // 输出文件命名规则
   },
-  module: {
-    rules: utils.styleLoaders({sourceMap: config.dev.cssSourceMap, usePostCSS: true})
-  },
-  mode: 'development',//模式
   devtool: config.dev.devtool,
   devServer: {
     hot: true,
     contentBase: false,
     publicPath: config.dev.assetsPublicPath,
+    historyApiFallback: {
+      rewrites: [{
+        from: /./,
+        to: config.dev.assetsPublicPath
+      }]
+    },
     overlay: config.dev.errorOverlay
       ? {warnings: false, errors: true}
       : false,
@@ -30,12 +32,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     port: config.dev.port,
     proxy: config.dev.proxyTable,
     quiet: true, // necessary for FriendlyErrorsPlugin
-    // before: fileServer
+    // before: mockServer
   },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': require('../config/dev.env'),
-      'CONTEXT_PATH': config.dev.assetsPublicPath
+      'CONTEXT_PATH': JSON.stringify(config.dev.assetsPublicPath)
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(),
@@ -62,13 +64,12 @@ module.exports = new Promise((resolve, reject) => {
       // Add FriendlyErrorsPlugin
       devWebpackConfig.plugins.push(new FriendlyErrorsPlugin({
         compilationSuccessInfo: {
-          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
+          messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}${config.dev.assetsPublicPath}`]
         },
         onErrors: config.dev.notifyOnErrors
           ? utils.createNotifierCallback()
           : undefined
       }))
-
       resolve(devWebpackConfig)
     }
   })

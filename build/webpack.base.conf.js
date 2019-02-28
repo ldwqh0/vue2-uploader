@@ -1,6 +1,10 @@
+'use strict'
 const utils = require('./utils')
-const vueLoaderConfig = require('./vue-loader.conf')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const config = require('../config')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const cssSourceMap = process.env.NODE_ENV === 'production' ? config.build.productionSourceMap : config.dev.cssSourceMap
 
 // 创建eslint规则
 const createLintingRule = () => ({
@@ -15,27 +19,31 @@ const createLintingRule = () => ({
 })
 
 module.exports = {
-  entry: {
-    app: utils.resolve('src/main.js') //程序入口点
-  },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': utils.resolve('src'),
+      // 'vue$': 'vue/dist/vue.esm.js',
+      '@': utils.resolve('src')
     }
   },
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        include: [utils.resolve('src'), utils.resolve('test')]
-      }, {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: vueLoaderConfig
+        options: {
+          transformAssetUrls: {
+            video: ['src', 'poster'],
+            source: 'src',
+            img: 'src',
+            image: 'xlink:href'
+          }
+        }
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: file => /node_modules/.test(file) && !/\.vue\.js/.test(file) && !/element-ui(\\|\/)(src|packages)/.test(file)
       }, {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
@@ -57,6 +65,41 @@ module.exports = {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash].[ext]')
         }
+      }, {
+        test: /\.less$/,
+        use: [{
+          loader: process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'vue-style-loader'
+        }, {
+          loader: 'css-loader',
+          options: {
+            sourceMap: cssSourceMap
+          }
+        }, {
+          loader: 'less-loader',
+          options: {
+            sourceMap: cssSourceMap
+          }
+        }]
+      }, {
+        test: /\.css$/,
+        use: [{
+          loader: process.env.NODE_ENV === 'production' ? MiniCssExtractPlugin.loader : 'vue-style-loader',
+        }, {
+          loader: 'css-loader',
+          options: {
+            sourceMap: cssSourceMap
+          }
+        }]
       }]
-  }
+  },
+  plugins: [
+    new VueLoaderPlugin(),
+
+    // 复制静态资源到目录中，如果有更多需要复制的资源，请在这里添加
+    new CopyWebpackPlugin([{
+      from: utils.resolve('static'),
+      to: config.build.assetsSubDirectory,
+      ignore: ['.*']
+    }])
+  ]
 }

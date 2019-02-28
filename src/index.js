@@ -7,7 +7,6 @@ Vue.config.productionTip = false
 console.log('Created By ldwqh0@outlook.com')
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  components: {App},
+  components: { App },
   template: '<App/>'
-})
+}).$mount('#app')

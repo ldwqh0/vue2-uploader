@@ -6,21 +6,21 @@ const path = require('path')
 
 module.exports = {
   dev: {
+    mode: 'development',
     // Paths
     assetsSubDirectory: 'static', // 静态资源的路径
-    assetsPublicPath: '/',// 项目发布路径
-    proxyTable: {      
+    assetsPublicPath: '/element-seed/', // 项目发布路径
+    proxyTable: {
       "/file":{
         "target":"http://127.0.0.1:8080"
       }
     },// devServer反向代理列表
-
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 80, // 服务端口
-    autoOpenBrowser: false, //编译完成后是否自动打开浏览器
-    errorOverlay: true, //在devServer中，是否启用错误输出层
-    notifyOnErrors: false, //是否在系统通知区域提示错误
+    port: 8888, // 服务端口
+    autoOpenBrowser: false, // 编译完成后是否自动打开浏览器
+    errorOverlay: true, // 在devServer中，是否启用错误输出层
+    notifyOnErrors: false, // 是否在系统通知区域提示错误
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
     // 是否使用 Eslint Loader 在编译过程中检查书写错误?
@@ -45,19 +45,20 @@ module.exports = {
   },
 
   build: {
+    mode: 'production',
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static', // 静态资源的路径
-    assetsPublicPath: '/', // 项目的的发布路径，必须以'/'结尾,建议使用 '/CONTEXT_PATH'的模式
+    assetsPublicPath: '/element-seed/', // 项目的的发布路径，必须以'/'结尾,建议使用 '/CONTEXT_PATH'的模式
 
     /**
      * Source Maps
      */
 
-    productionSourceMap: true,
+    productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 
@@ -65,7 +66,7 @@ module.exports = {
     // Surge or Netlify already gzip all static assets for you.
     // Before setting to `true`, make sure to:
     // npm install --save-dev compression-webpack-plugin
-    productionGzip: false, //是否启用Gzip压缩，如果使用nginx发布，必须选择false
+    productionGzip: false, // 是否启用Gzip压缩，如果使用nginx发布，必须选择false
     productionGzipExtensions: ['js', 'css'],
 
     // Run the build command with an extra argument to
