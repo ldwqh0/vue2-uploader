@@ -1,6 +1,6 @@
 <template>
   <span class="vue-uploader">
-    <span @click="openchoose">
+    <span @click="openchoose" class="vue-uploader-btn">
       <slot>
         <span class="vue-uploader-icon">上传文件</span>
       </slot>

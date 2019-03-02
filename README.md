@@ -22,10 +22,10 @@ mvn spring-boot:run
 [分块上传](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 [Component API](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 ## 更新历史
+* 0.2.1 修改了按钮打开的方式，方便了样式调整
+* 0.2.0 对组件进行了一次改版，将所有的依赖项目都放在了VueUploader.vue文件中，方便打包工具进行编译
 * 0.1.7
-  增加一个配置对象，可以配置uploader的上传实例
-* 0.1.6
-  
+  增加一个配置对象，可以配置uploader的上传实例 
 * 0.1.5  
   去掉事件的on-前缀
 * 0.1.4  
