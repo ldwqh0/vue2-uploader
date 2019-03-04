@@ -20,6 +20,7 @@
   import uuid from 'uuid/v1'
 
   const CancelToken = axios.CancelToken
+
   export default {
     name: 'VueUploader',
     props: {
@@ -74,7 +75,11 @@
     computed: {
       // 进度百分比
       progress () {
-        return Number.parseInt(this.loaded / this.total * 100)
+        if (this.total === 0) {
+          return 0
+        } else {
+          return Number.parseInt(this.loaded / this.total * 100)
+        }
       },
       // 已上传的部分
       loaded () {
@@ -120,7 +125,6 @@
             })
             fileItem.onProgress = (progress) => this.$emit('item-progress', fileItem, progress)
             fileItem.onComplete = () => {
-              this.removeItem(fileItem)
               this.$emit('item-complete', fileItem)
             }
             fileItem.onSuccess = (response) => this.$emit('item-success', fileItem, response)
