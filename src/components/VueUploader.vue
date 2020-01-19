@@ -11,9 +11,21 @@
            type="file"
            ref="fileInput"
            @change="_$$change"
-           :name="name">
-    <slot name="process-list">
-      <div class="process-list"/>
+           :name="name" />
+    <slot name="file-list" v-bind:files="files" v-if="showProgress">
+      <div class="file-list">
+        <table>
+          <template v-for="(item,index) in files">
+            <tr :key="index" v-if="item.state!=='dead'">
+              <td>{{item.file.name}}</td>
+              <td>{{item.progress}}%</td>
+              <td>
+                <a href="javascript:void(0)">取消</a>
+              </td>
+            </tr>
+          </template>
+        </table>
+      </div>
     </slot>
   </div>
 </template>
@@ -57,6 +69,10 @@
       chunkSize: { // 文件分块大小,为0代表不分块
         type: Number,
         default: () => 0
+      },
+      showProgress: {
+        type: [Boolean],
+        default: () => true
       },
       http: {
         type: [Object, Function],
@@ -176,6 +192,8 @@
     $$chunkIndex = 0
     $$cancelTokenSource // 取消标记
     $$loaded = 0 // 已经上传的大小
+    // 请求的响应
+    response = {}
 
     onProgress () { }
 
@@ -256,6 +274,7 @@
                 if (error <= 0) {
                   // 完成之后设置进度
                   this.state = 'dead'
+                  this.response = response
                   this.onSuccess(response)
                   resolve()
                 }
@@ -266,6 +285,7 @@
         } else {
           this.$$uploadFile().then(response => {
             this.onSuccess(response)
+            this.response = response
             resolve()
           }).catch(e => {
             this.onError(e)
