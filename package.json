@@ -15,6 +15,9 @@
     "lint": "eslint --ext .js,.vue src",
     "fix": "eslint --fix --ext .js,.vue src"
   },
+  "files": [
+    "src/components"
+  ],
   "peerDependencies": {
     "qs": "^6.5.0",
     "vue": "^2.5.0",
@@ -24,9 +27,6 @@
   "dependencies": {
     "uuid": "^3.3.2"
   },
-  "files": [
-    "src/components"
-  ],
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.2.0",
