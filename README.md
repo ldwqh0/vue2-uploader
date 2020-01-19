@@ -22,7 +22,8 @@ mvn spring-boot:run
 [分块上传](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 [Component API](https://github.com/ldwqh0/vue2-uploader/wiki/Component-API)  
 ## 更新历史
-* 0.2.3 使用递归调用替换async函数，解决某些情况下编译不过的问题
+* 0.2.3 使用递归调用替换async函数，解决某些情况下编译不过的问题  
+  增加上传进度列表
 * 0.2.2 修改了一个整体进度时，会处理NaN的情况<br>
   修该了文件移除逻辑，在文件上传完成之后，不会从文件列表中移除
 * 0.2.1 修改了按钮打开的方式，方便了样式调整
