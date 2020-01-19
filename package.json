@@ -1,6 +1,6 @@
 {
   "name": "vue2-uploader",
-  "version": "0.2.4",
+  "version": "0.2.3",
   "description": "A html5 vuejs uploader component",
   "author": "ldwqh0 <ldwqh0@outlook.com>",
   "main": "src/components/index.js",
@@ -13,7 +13,6 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "prepublish": "babel src/components -d dist/components",
     "fix": "eslint --fix --ext .js,.vue src"
   },
   "peerDependencies": {
@@ -25,6 +24,9 @@
   "dependencies": {
     "uuid": "^3.3.2"
   },
+  "files": [
+    "src/components"
+  ],
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.2.0",
