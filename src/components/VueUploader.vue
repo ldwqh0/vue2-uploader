@@ -1,11 +1,10 @@
 <template>
-  <span class="vue-uploader">
-    <span @click="openchoose">
-      <slot>
+  <div class="vue-uploader">
+    <span @click="openchoose" class="vue-uploader-btn">
+      <slot name="button">
         <span class="vue-uploader-icon">上传文件</span>
       </slot>
     </span>
-
     <input style="display: none;"
            :multiple="multiple"
            :accept="accept"
@@ -13,13 +12,17 @@
            ref="fileInput"
            @change="_$$change"
            :name="name">
-  </span>
+    <slot name="process-list">
+      <div class="process-list"/>
+    </slot>
+  </div>
 </template>
 <script>
   import axios from 'axios'
   import uuid from 'uuid/v1'
 
   const CancelToken = axios.CancelToken
+
   export default {
     name: 'VueUploader',
     props: {
@@ -74,7 +77,11 @@
     computed: {
       // 进度百分比
       progress () {
-        return Number.parseInt(this.loaded / this.total * 100)
+        if (this.total === 0) {
+          return 0
+        } else {
+          return Number.parseInt(this.loaded / this.total * 100)
+        }
       },
       // 已上传的部分
       loaded () {
@@ -120,7 +127,6 @@
             })
             fileItem.onProgress = (progress) => this.$emit('item-progress', fileItem, progress)
             fileItem.onComplete = () => {
-              this.removeItem(fileItem)
               this.$emit('item-complete', fileItem)
             }
             fileItem.onSuccess = (response) => this.$emit('item-success', fileItem, response)
@@ -171,15 +177,15 @@
     $$cancelTokenSource // 取消标记
     $$loaded = 0 // 已经上传的大小
 
-    onProgress () {}
+    onProgress () { }
 
-    onSuccess () {}
+    onSuccess () { }
 
-    onError () {}
+    onError () { }
 
-    onComplete () {}
+    onComplete () { }
 
-    onCancel () {}
+    onCancel () { }
 
     get id () {
       return this.$$id
@@ -218,46 +224,57 @@
       this.http = http
     }
 
-    /**
-     * 运行任务
-     */
-    async run () {
-      if (this.chunkSize > 0) {
-        let response
-        let error = 0
-        let position = 0
-        let chunkCount = Math.ceil(this.file.size / this.chunkSize)
-        let chunkIndex = 0
-        while (position < this.file.size) { // 依次循环上传
-          if (this.state !== 'running') {
-            return
-          } else {
-            try {
-              response = await this.$$uploadChunk({ position, chunkCount, chunkIndex })
-              position += this.chunkSize
-              error = 0 // 每次上传成功，充值错误计数
-              chunkIndex++
-            } catch (e) {
-              if (error++ >= 10) { // 上传错误超限上传失败,引发事件
-                this.onError(e)
-                break // 终止循环
+    run () {
+      return new Promise((resolve, reject) => {
+        if (this.chunkSize > 0) {
+          let response
+          let error = 0
+          let position = 0
+          let chunkCount = Math.ceil(this.file.size / this.chunkSize)
+          let chunkIndex = 0
+          let err
+          let r = () => {
+            if (this.state !== 'running') {
+              resolve()
+            } else {
+              if (position < this.file.size) {
+                if (error < 10) {
+                  this.$$uploadChunk({ position, chunkCount, chunkIndex }).then((r) => {
+                    response = r
+                    position += this.chunkSize
+                    error = 0
+                    chunkIndex++
+                  }).catch(e => {
+                    error++
+                    err = e
+                  }).finally(r)
+                } else {
+                  this.state = 'dead'
+                  reject(err)
+                }
+              } else {
+                if (error <= 0) {
+                  // 完成之后设置进度
+                  this.state = 'dead'
+                  this.onSuccess(response)
+                  resolve()
+                }
               }
             }
           }
+          r()
+        } else {
+          this.$$uploadFile().then(response => {
+            this.onSuccess(response)
+            resolve()
+          }).catch(e => {
+            this.onError(e)
+            reject(e)
+          }).finally(() => {
+            this.state = 'dead'
+          })
         }
-        if (error <= 0) {
-          // 完成之后设置进度
-          this.onSuccess(response)
-        }
-      } else {
-        try {
-          let response = await this.$$uploadFile()
-          this.onSuccess(response)
-        } catch (e) {
-          this.onError(e)
-        }
-      }
-      this.state = 'dead'
+      })
     }
 
     /**
@@ -317,7 +334,7 @@
     // 任务队列
     queue = []
     $$threads = 0
-    onComplete = () => {}
+    onComplete = () => { }
 
     // 任务调度的最大线程数默认为3
     constructor ({ maxThread = 3 } = { maxThread: 3 }) {
