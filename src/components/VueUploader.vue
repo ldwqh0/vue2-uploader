@@ -1,26 +1,27 @@
 <template>
   <div class="vue-uploader">
-    <span @click="openchoose" class="vue-uploader-btn">
+    <span class="vue-uploader-btn" @click="openchoose">
       <slot name="button">
         <span class="vue-uploader-icon">上传文件</span>
       </slot>
     </span>
-    <input style="display: none;"
+    <input ref="fileInput"
+           style="display: none;"
            :multiple="multiple"
            :accept="accept"
            type="file"
-           ref="fileInput"
-           @change="_$$change"
-           :name="name" />
-    <slot name="file-list" v-bind:files="files" v-if="showProgress">
+           :name="name"
+           @change="_$$change">
+    <slot v-if="showProgress" name="file-list" :files="files">
       <div class="file-list">
         <table>
           <template v-for="(item,index) in files">
-            <tr :key="index" v-if="item.state!=='dead'">
-              <td>{{item.file.name}}</td>
-              <td>{{item.progress}}%</td>
+            <tr :key="index">
+              <td>{{ item.file.name }}</td>
+              <td v-if="!item.hasError">{{ item.progress }}%</td>
+              <td v-if="item.hasError" style="color: red">{{ item.error }}</td>
               <td>
-                <a href="javascript:void(0)">取消</a>
+                <a href="javascript:void(0)" @click="item.cancel()">取消</a>
               </td>
             </tr>
           </template>
@@ -84,12 +85,6 @@
         files: []
       }
     },
-    created () {
-      this.taskExecutor = new TaskExecutor({
-        maxThreads: this.maxThreads
-      })
-      this.taskExecutor.onComplete = () => this.$emit('complete')
-    },
     computed: {
       // 进度百分比
       progress () {
@@ -113,6 +108,12 @@
         this.$emit('progress', val)
       }
     },
+    created () {
+      this.taskExecutor = new TaskExecutor({
+        maxThreads: this.maxThreads
+      })
+      this.taskExecutor.onComplete = () => this.$emit('complete', this.files.filter(item => !item.hasError))
+    },
     methods: {
       uploadAll () {
         // 提交所有任务
@@ -120,10 +121,10 @@
       },
       cancelAll () {
         // 取消所有任务
-        this.files.forEach(file => file.cancel())
+        [...this.files].forEach(item => item.cancel())
       },
       removeItem (fileItem) {
-        for (let i in this.files) {
+        for (const i in this.files) {
           if (this.files[i] === fileItem) {
             this.files.splice(i, 1)
             this.$emit('change', this.files)
@@ -132,9 +133,9 @@
         }
       },
       _$$change (e) {
-        for (let file of e.target.files) {
+        for (const file of e.target.files) {
           if (this._$$doFilter(file)) { // 校验文件是否符合规则，如果符合规则，添加到文件列表，如果不符合，不添加
-            let fileItem = new Task({
+            const fileItem = new Task({
               file,
               url: this.url,
               chunkSize: this.chunkSize,
@@ -173,7 +174,7 @@
         }
       },
       openchoose () {
-        this.$refs['fileInput'].click()
+        this.$refs.fileInput.click()
       }
     }
   }
@@ -194,16 +195,28 @@
     $$loaded = 0 // 已经上传的大小
     // 请求的响应
     response = {}
+    // 错误信息
+    error = null
 
-    onProgress () { }
+    onProgress () {
+      // do nothing
+    }
 
-    onSuccess () { }
+    onSuccess () {
+      // do nothing
+    }
 
-    onError () { }
+    onError () {
+      // do nothing
+    }
 
-    onComplete () { }
+    onComplete () {
+      // do nothing
+    }
 
-    onCancel () { }
+    onCancel () {
+      // do nothing
+    }
 
     get id () {
       return this.$$id
@@ -225,12 +238,16 @@
     }
 
     get progress () {
-      let p = this.$$loaded / this.file.size * 100
+      const p = this.$$loaded / this.file.size * 100
       if (p >= 100 && this.$$state === 'dead') {
         return 100
       } else if (p > 1) {
         return p - 1
       }
+    }
+
+    get hasError () {
+      return this.error !== undefined && this.error !== null
     }
 
     constructor ({ file, url, chunkSize, http, name }) {
@@ -248,10 +265,10 @@
           let response
           let error = 0
           let position = 0
-          let chunkCount = Math.ceil(this.file.size / this.chunkSize)
+          const chunkCount = Math.ceil(this.file.size / this.chunkSize)
           let chunkIndex = 0
           let err
-          let r = () => {
+          const r = () => {
             if (this.state !== 'running') {
               resolve()
             } else {
@@ -268,6 +285,7 @@
                   }).finally(r)
                 } else {
                   this.state = 'dead'
+                  this.error = err
                   reject(err)
                 }
               } else {
@@ -288,6 +306,7 @@
             this.response = response
             resolve()
           }).catch(e => {
+            this.error = e
             this.onError(e)
             reject(e)
           }).finally(() => {
@@ -302,9 +321,9 @@
      */
     $$uploadChunk ({ position, chunkIndex, chunkCount }) {
       this.$$cancelTokenSource = CancelToken.source()
-      let cancelToken = this.$$cancelTokenSource.token
-      let blob = this.file.slice(position, position + this.chunkSize)
-      let data = new FormData()
+      const cancelToken = this.$$cancelTokenSource.token
+      const blob = this.file.slice(position, position + this.chunkSize)
+      const data = new FormData()
       data.append(this.name, blob)
       data.append('filename', this.file.name)
       return this.http.post(this.url, data, {
@@ -324,8 +343,8 @@
 
     $$uploadFile () {
       this.$$cancelTokenSource = CancelToken.source()
-      let cancelToken = this.$$cancelTokenSource.token
-      let data = new FormData()
+      const cancelToken = this.$$cancelTokenSource.token
+      const data = new FormData()
       data.append(this.name, this.file)
       return this.http.post(this.url, data, {
         cancelToken,
@@ -344,8 +363,8 @@
       if (this.$$cancelTokenSource) {
         this.$$cancelTokenSource.cancel('用户取消了上传')// 取消上传
       }
-      this.onCancel()
       this.state = 'blocked'
+      this.onCancel()
     }
   }
 
@@ -354,7 +373,9 @@
     // 任务队列
     queue = []
     $$threads = 0
-    onComplete = () => { }
+    onComplete = () => {
+      // do nothing
+    }
 
     // 任务调度的最大线程数默认为3
     constructor ({ maxThread = 3 } = { maxThread: 3 }) {
@@ -374,12 +395,12 @@
     execute () {
       if (this.queue.length > 0) {
         while (this.$$threads < this.maxThread && this.queue.length > 0) {
-          let task = this.queue.shift()
+          const task = this.queue.shift()
           if (task.state === 'runnable') {
             task.state = 'running'
             // 任务完成之后,启动一个新的任务
             this.$$threads++
-            let fn = task.onComplete
+            const fn = task.onComplete
             task.onComplete = () => {
               this.$$threads--
               if (fn instanceof Function) {
